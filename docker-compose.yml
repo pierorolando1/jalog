@@ -1,14 +1,10 @@
 services:
   frontend:
-    image: oven/bun:latest
+    build: ./frontend
     ports:
       - "5173:5173"  # Format is "HOST:CONTAINER"
-    volumes:
-      - ./frontend:/app  # Mount the frontend directory to /app in the container
-    working_dir: /app
     environment:
       - NODE_ENV=development
-    command: bash -c "bun install && bun run dev"
   java-app:
     build: ./java-prolog-api
     ports:
