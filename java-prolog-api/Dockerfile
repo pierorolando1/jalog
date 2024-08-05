@@ -1,10 +1,18 @@
-# Dockerfile para la aplicación Java
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-slim
+
+# Install SWI-Prolog and necessary dependencies
+RUN apt-get update && apt-get install -y swi-prolog libsqlite3-dev
+RUN apt-get install maven -y
 
 # Instalar Maven
-RUN apk update && apk add maven
+#RUN apk update && apk add maven
 
+# Set the working directory in the container
 WORKDIR /app
+
+# Set environment variables
+ENV SWI_HOME_DIR=/usr/lib/swi-prolog
+ENV LD_LIBRARY_PATH=${SWI_HOME_DIR}/lib/x86_64-linux:${LD_LIBRARY_PATH}
 
 # Copiar el archivo pom.xml y descargar dependencias
 COPY pom.xml .
@@ -20,4 +28,4 @@ RUN mvn package
 EXPOSE 8080
 
 # Comando para ejecutar la aplicación
-CMD ["java", "-jar", "target/java-prolog-api-1.0-SNAPSHOT.jar"]
+CMD ["java", "-Djava.library.path=/usr/lib/swi-prolog/lib/x86_64-linux", "-jar", "target/java-prolog-api-1.0-SNAPSHOT.jar"]

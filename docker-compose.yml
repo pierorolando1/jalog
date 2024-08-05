@@ -13,13 +13,6 @@ services:
     build: ./java-prolog-api
     ports:
       - "8080:8080"
-    depends_on:
-      - prolog
     environment:
       - PROLOG_HOST=prolog
       - PROLOG_PORT=4000
-
-  prolog:
-    build: ./prolog
-    ports:
-      - "4000:4000"
