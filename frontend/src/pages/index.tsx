@@ -7,10 +7,11 @@ import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 import DefaultLayout from "@/layouts/default";
+import ProtectedLayout from "@/layouts/protected";
 
 export default function IndexPage() {
   return (
-    <DefaultLayout>
+    <ProtectedLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
         <div className="inline-block max-w-lg text-center justify-center">
           <h1 className={title()}>Make&nbsp;</h1>
@@ -55,6 +56,6 @@ export default function IndexPage() {
           </Snippet>
         </div>
       </section>
-    </DefaultLayout>
+    </ProtectedLayout>
   );
 }
