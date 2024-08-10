@@ -14,10 +14,10 @@ public class Loan {
     }
 
     public boolean add() {
-        String prologQuery = String.format("assert(prestamo('%s', '%s', '%s'))", id, ownerDni, status);
+        String prologQuery = String.format("assert(prestamo(%s, %s, %s))", id, ownerDni, status);
         Query query = new Query(prologQuery);
         if (query.hasSolution()) {
-            String relationQuery = String.format("assert(relacion_cliente_prestamo('%s', '%s'))", ownerDni, id);
+            String relationQuery = String.format("assert(relacion_cliente_prestamo(%s, %s))", ownerDni, id);
             return new Query(relationQuery).hasSolution();
         }
         return false;

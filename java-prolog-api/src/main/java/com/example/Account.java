@@ -12,10 +12,10 @@ public class Account {
     }
 
     public boolean add() {
-        String prologQuery = String.format("assert(cuenta('%s', '%s'))", id, ownerDni);
+        String prologQuery = String.format("assert(cuenta(%s, %s))", id, ownerDni);
         Query query = new Query(prologQuery);
         if (query.hasSolution()) {
-            String relationQuery = String.format("assert(relacion_cliente_cuenta('%s', '%s'))", ownerDni, id);
+            String relationQuery = String.format("assert(relacion_cliente_cuenta(%s, %s))", ownerDni, id);
             return new Query(relationQuery).hasSolution();
         }
         return false;

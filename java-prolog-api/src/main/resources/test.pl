@@ -18,11 +18,17 @@ cuenta(1234, 74160675).
 cuenta(5678, 60737330).
 cuenta(9012, 74160675).  % Segunda cuenta para Chris Vega
 
+cuenta(0000, 00000000). % Cuenta del banco
+
 prestamo(P001, 74160675, al_dia).
 prestamo(P002, 60737330, atrasado).
 prestamo(P003, 74160675, pagado).
 
-transaccion(T001, 1234, 5678, 1000).
+transaccion(T000, 0000, 1234, 10000). % Deposito inicial
+transaccion(T000, 0000, 5678, 5000). % Deposito inicial
+
+
+transaccion(T001, 1234, 5678, 700).
 transaccion(T002, 5678, 1234, 500).
 transaccion(T003, 1234, 9012, 300).
 

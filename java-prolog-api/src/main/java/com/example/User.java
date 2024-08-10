@@ -13,7 +13,7 @@ public class User {
     }
 
     public boolean add() {
-        String prologQuery = String.format("assert(cliente('%s', '%s'))", dni, name);
+        String prologQuery = String.format("assert(cliente(%s, '%s'))", dni, name);
         return new Query(prologQuery).hasSolution();
     }
 }

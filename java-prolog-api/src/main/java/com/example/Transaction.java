@@ -16,12 +16,12 @@ public class Transaction {
     }
 
     public boolean add() {
-        String prologQuery = String.format("assert(transaccion('%s', '%s', '%s', %f))", 
+        String prologQuery = String.format("assert(transaccion(%s, %s, %s, %f))", 
                                            id, sourceAccountId, destinationAccountId, amount);
         Query query = new Query(prologQuery);
         if (query.hasSolution()) {
-            String relationQuery1 = String.format("assert(relacion_cuenta_transaccion('%s', '%s'))", sourceAccountId, id);
-            String relationQuery2 = String.format("assert(relacion_cuenta_transaccion('%s', '%s'))", destinationAccountId, id);
+            String relationQuery1 = String.format("assert(relacion_cuenta_transaccion(%s, %s))", sourceAccountId, id);
+            String relationQuery2 = String.format("assert(relacion_cuenta_transaccion(%s, %s))", destinationAccountId, id);
             return new Query(relationQuery1).hasSolution() && new Query(relationQuery2).hasSolution();
         }
         return false;

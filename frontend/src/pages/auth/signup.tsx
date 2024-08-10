@@ -25,7 +25,16 @@ const SignUpPage = () => {
       dni
     })
 
-    await fetch(apiUrl + "/api/addClient?dni=" + dni + "&name=" + name)
+    await fetch(apiUrl + "api/addClient", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        dni
+      }),
+    })
   }
 
 
