@@ -1,5 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
+export const apiUrl = "http://localhost:8080/";
+
 export const siteConfig = {
   name: "Vite + NextUI",
   description: "Make beautiful websites regardless of your design experience.",

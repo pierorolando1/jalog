@@ -1,4 +1,5 @@
 import { createUser, db } from "@/config/firebase.config"
+import { apiUrl } from "@/config/site"
 import PublicLayout from "@/layouts/public"
 import { useModal } from "@/stores/stores"
 import { Button } from "@nextui-org/button"
@@ -23,6 +24,8 @@ const SignUpPage = () => {
       email,
       dni
     })
+
+    await fetch(apiUrl + "/api/addClient?dni=" + dni + "&name=" + name)
   }
 
 

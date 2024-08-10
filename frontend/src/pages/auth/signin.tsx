@@ -40,7 +40,7 @@ const SignInPage = () => {
         className="my-2" type="password" label="Password" placeholder="Enter your password" />
 
       <Button color="primary" className="w-full py-[1.4rem] my-5" onClick={signIn}>Sign in</Button>
-      <Button variant="flat" color="primary" className="w-full py-[1.4rem] my-5" onClick={() => { navigate('/signup') }}>Alredy account?</Button>
+      <Button variant="flat" color="primary" className="w-full py-[1.4rem] my-5" onClick={() => { navigate('/signup') }}>No account?</Button>
     </section>
     </PublicLayout>
   )
