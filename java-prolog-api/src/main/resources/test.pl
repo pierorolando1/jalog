@@ -1,5 +1,3 @@
-% financial_relations.pl
-
 % Entities
 cliente(dni, nombre_cliente).
 cuenta(id_cuenta, dni).
@@ -67,7 +65,5 @@ evaluar_prestamo(DNI, Viabilidad) :-
 
 evaluar_factores(bueno, alta, buena, viable).
 evaluar_factores(bueno, media, buena, viable).
-evaluar_factores(bueno, baja, buena, consideracion).
-evaluar_factores(bueno, _, mala, consideracion).
-evaluar_factores(malo, alta, buena, consideracion).
 evaluar_factores(_, _, _, no_viable).
+
