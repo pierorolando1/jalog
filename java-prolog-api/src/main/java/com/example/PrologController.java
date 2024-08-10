@@ -1,5 +1,8 @@
 package com.example;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jpl7.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,15 +56,18 @@ public class PrologController {
     }
 
     @GetMapping("/evaluateLoan")
-    public String evaluateLoan(@RequestParam String dni) {
+    public Map<String, Object> evaluateLoan(@RequestParam String dni) {
         String prologQuery = String.format("evaluar_prestamo('%s', Viabilidad)", dni);
         Query query = new Query(prologQuery);
 
         if (query.hasSolution()) {
-            Term viabilidad = query.oneSolution().get("Viabilidad");
-            return "Loan viability for DNI " + dni + ": " + viabilidad.toString();
+            Map<String, Object> solution = new HashMap<>();
+            solution.put("viabilidad", query.oneSolution().get("Viabilidad").toString());
+            solution.put("dni", dni);
+            
+            return solution;
         } else {
-            return "Evaluation query failed.";
+            return null;
         }
     }
 
