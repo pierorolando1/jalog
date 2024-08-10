@@ -1,25 +1,37 @@
 import { loginUser } from "@/config/firebase.config"
+import PublicLayout from "@/layouts/public"
+import { useModal } from "@/stores/stores"
 import { Button } from "@nextui-org/button"
 import { Input } from "@nextui-org/input"
 import { useState } from "react"
-import { redirect } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const SignInPage = () => {
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
 
+  const { open, close } = useModal()
+
+  const navigate = useNavigate()
+
   const signIn = async () => {
+    open()
+
     try {
       const user = await loginUser(email, password)
       console.log(user)
-      redirect('/')
+      navigate('/')
+      close()
     } catch (error) {
       console.log(error)
+      close()
     }
   }
 
   return (
-    <section className="max-w-lg mx-auto p-5 h-screen flex flex-col justify-center items-center">
+    <PublicLayout>
+
+    <section className="max-w-lg mx-auto p-5 h-full flex flex-col justify-center items-center">
       <Input 
         onChange={(v) => setemail(v.target.value)} 
         className="my-2"  type="email" label="Email" placeholder="Enter your email" />
@@ -28,7 +40,9 @@ const SignInPage = () => {
         className="my-2" type="password" label="Password" placeholder="Enter your password" />
 
       <Button color="primary" className="w-full py-[1.4rem] my-5" onClick={signIn}>Sign in</Button>
+      <Button variant="flat" color="primary" className="w-full py-[1.4rem] my-5" onClick={() => { navigate('/signup') }}>Alredy account?</Button>
     </section>
+    </PublicLayout>
   )
 }
 

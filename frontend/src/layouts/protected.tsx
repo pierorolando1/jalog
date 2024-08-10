@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
 import { useEffect, useState } from "react";
 import { LoadingPage } from "@/pages/loading";
+import { Navigate } from "react-router-dom";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -28,13 +29,12 @@ export default function ProtectedLayout({
         setauthState({ loading: false, auth: true })
       } else {
         setauthState({ loading: false, auth: false })
-
       }
     })
   },[])
 
 
-  return authState.loading ? <LoadingPage /> : (
+  return authState.loading ? <LoadingPage /> : !authState.auth ? <Navigate to="/signup" /> : (
     <div className="relative flex flex-col h-screen">
       <Navbar />
       <main className="container mx-auto max-w-7xl px-6 flex-grow pt-16">
