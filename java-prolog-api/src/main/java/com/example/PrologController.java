@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import org.jpl7.Atom;
 import org.jpl7.Query;
 import org.jpl7.Term;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -112,28 +112,83 @@ public class PrologController {
         return Collections.emptyList();
     }
 
-
     @GetMapping("/getTransactions")
     public List<Map<String, Object>> getTransactions(@RequestParam String idCuenta) {
-        String prologQuery = String.format("findall(trans(ID, Origen, Destino, Monto), " +
-                                           "(relacion_cuenta_transaccion(%s, ID), " +
-                                           "transaccion(ID, Origen, Destino, Monto)), Transacciones)", idCuenta);
+        String prologQuery = String.format(
+            "findall(trans(ID, Origen, Destino, Monto), " +
+            "(transaccion(ID, Origen, Destino, Monto), " +
+            "(Origen = %1$s ; Destino = %1$s)), Transacciones)",
+            idCuenta
+        );
         Query query = new Query(prologQuery);
         if (query.hasSolution()) {
             Term[] transactions = query.oneSolution().get("Transacciones").toTermArray();
             return Arrays.stream(transactions)
-                         .map(this::transactionToMap)
+                         .map(t -> this.transactionToMap(t, idCuenta))
                          .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    private Map<String, Object> transactionToMap(Term transaction) {
+    
+    @GetMapping("/getAccountBalance")
+    public Map<String, Object> getAccountBalance(@RequestParam String idCuenta) {
+        String prologQuery = String.format("calcular_balance(%s, Balance)", idCuenta);
+        Query query = new Query(prologQuery);
+        Map<String, Object> response = new HashMap<>();
+        if (query.hasSolution()) {
+            Map<String, Term> solution = query.oneSolution();
+            double balance = solution.get("Balance").doubleValue();
+            response.put("idCuenta", idCuenta);
+            response.put("balance", balance);
+        } else {
+            response.put("error", "No se pudo calcular el balance para la cuenta especificada");
+        }
+        return response;
+    }
+
+
+    private Map<String, Object> transactionToMap(Term transaction, String idCuenta) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", transaction.arg(1).toString());
-        map.put("origen", transaction.arg(2).toString());
-        map.put("destino", transaction.arg(3).toString());
-        map.put("monto", transaction.arg(4).floatValue());
+        String id = transaction.arg(1).toString();
+        String origen = transaction.arg(2).toString();
+        String destino = transaction.arg(3).toString();
+        double monto = transaction.arg(4).doubleValue();
+        
+        map.put("id", id);
+        map.put("origen", origen);
+        map.put("destino", destino);
+        map.put("monto", monto);
+        map.put("beneficioso", destino.equals(idCuenta));
+        
         return map;
     }
+
+
+
+    @GetMapping("/getLoans")
+    public List<Map<String, Object>> getLoansByUser(@RequestParam String dni) {
+        String prologQuery = String.format("obtener_prestamos_por_usuario(%s, Prestamos)", dni);
+        Query query = new Query(prologQuery);
+        if (query.hasSolution()) {
+            Term[] loans = query.oneSolution().get("Prestamos").toTermArray();
+            return Arrays.stream(loans)
+                         .map(t -> this.loanToMap(t, dni))
+                         .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    private Map<String, Object> loanToMap(Term loan, String dni) {
+        Map<String, Object> map = new HashMap<>();
+        String id = loan.arg(1).toString();
+        String estado = loan.arg(3).toString();
+        
+        map.put("idPrestamo", id);
+        map.put("dni", dni);
+        map.put("estado", estado);
+        
+        return map;
+    }
+
 }
