@@ -20,6 +20,56 @@ export default function IndexPage() {
   });
 
 
+
+  // Estados para manejar el nuevo modal de transacción
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+  const [transactionData, setTransactionData] = useState({
+    idCuentaDestino: "",
+    monto: "",
+  });
+  const [isSubmittingTransaction, setIsSubmittingTransaction] = useState(false);
+  const [transactionSubmitResult, setTransactionSubmitResult] = useState<any>(null);
+
+    // Función para realizar la transacción
+    const handleTransactionSubmit = async () => {
+      setIsSubmittingTransaction(true);
+      try {
+        const response = await fetch(apiUrl + "api/addTransaction", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idTransaccion: Date.now().toString(),
+            idCuentaOrigen: useCurrAccount.account,
+            idCuentaDestino: transactionData.idCuentaDestino,
+            monto: parseFloat(transactionData.monto),
+          }),
+        });
+        const result = await response.text();
+        setTransactionSubmitResult(result);
+        if (result === "Transacción añadida con éxito") {
+          setuseCurrAccount((prev: any) => ({
+            ...prev,
+            transactions: [...prev.transactions, {
+              id: Date.now().toString(),
+              origen: useCurrAccount.account,
+              destino: transactionData.idCuentaDestino,
+              monto: transactionData.monto,
+              beneficioso: false, // Asume que es un retiro de la cuenta actual
+            }],
+          }));
+        }
+      } catch (error) {
+        console.error(error);
+        setTransactionSubmitResult("Error al añadir transacción");
+      } finally {
+        setIsSubmittingTransaction(false);
+      }
+    };
+
+
+
   const [loans, setLoans] = useState([]);
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
   const [loanViability, setLoanViability] = useState<any>(null);
@@ -164,7 +214,13 @@ export default function IndexPage() {
                   }}
                 >Get Balance</Button>
             }
-
+                        <Button
+              color="secondary"
+              variant="flat"
+              onClick={() => setIsTransactionModalOpen(true)}
+            >
+              Realizar Transacción
+            </Button>
             {
 
               (useCurrAccount.transactions?.length > 0) ?
@@ -208,6 +264,57 @@ export default function IndexPage() {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+
+      {/* Modal para realizar la transacción */}
+      <Modal isOpen={isTransactionModalOpen} onClose={() => setIsTransactionModalOpen(false)}>
+        <ModalContent>
+          <ModalHeader>Realizar Transacción</ModalHeader>
+          <ModalBody>
+            <Input
+              type="text"
+              label="Cuenta Destino"
+              placeholder="Ingrese la cuenta destino"
+              value={transactionData.idCuentaDestino}
+              onChange={(e) => setTransactionData({ ...transactionData, idCuentaDestino: e.target.value })}
+            />
+            <Input
+              type="number"
+              label="Monto"
+              placeholder="Ingrese el monto"
+              value={transactionData.monto}
+              onChange={(e) => setTransactionData({ ...transactionData, monto: e.target.value })}
+            />
+            {transactionSubmitResult && (
+              <p>{transactionSubmitResult}</p>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="danger"
+              variant="light"
+              onClick={() => setIsTransactionModalOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              color="primary"
+              onClick={handleTransactionSubmit}
+              disabled={isSubmittingTransaction || !transactionData.idCuentaDestino || !transactionData.monto}
+            >
+              {isSubmittingTransaction ? (
+                <>
+                  <Spinner size="sm" />
+                  Procesando...
+                </>
+              ) : (
+                "Enviar Transacción"
+              )}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <section className="flex flex-col justify-center gap-4 py-8 px-10">
         <h1 className="font-black text-3xl" >Welcome home {user?.name}</h1>
         <Table aria-label="Example table with dynamic content">
