@@ -51,6 +51,13 @@
             <artifactId>packages-jpl</artifactId>
             <version>V8.3.2</version>	<!-- version 7.6.1 of JPL -->
         </dependency>
+
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.1.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

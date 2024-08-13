@@ -18,12 +18,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class PrologController {
+
+    private Firestore db;
 
     public PrologController() {
         // Consult the Prolog file at initialization
@@ -35,8 +44,7 @@ public class PrologController {
             throw new RuntimeException("Failed to consult the Prolog file.");
         }
 
-        
-
+        db = FirestoreOptions.getDefaultInstance().getService();
     }
 
     @GetMapping("/query")
@@ -77,6 +85,21 @@ public class PrologController {
         String idCuenta = requestBody.get("idCuenta").asText();
         String dni = requestBody.get("dni").asText();
         Account account = new Account(idCuenta, dni);
+
+//        try {
+//
+//            // Define the data to add
+//            Map<String, Object> data = new HashMap<>();
+//            data.put("idCuenta", idCuenta);
+//            data.put("dni", dni);
+//
+//            // Create a new collection "users" and add a document to it
+//            db.createCollectionWithDocument("account", "acc-1234", data);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         return account.add() ? "Cuenta añadida con éxito" : "Error al añadir cuenta";
     }
 
