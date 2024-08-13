@@ -1,0 +1,7 @@
+version: '2'
+authtoken: 2kaZ6Jm8mijRlXHiV926LwP1Cqm_6aexVtMRFnGfV8NFFyGF9
+tunnels:
+  myapp:
+    proto: http
+    addr: frontend:5173
+    hostname: bat-golden-partly.ngrok-free.app

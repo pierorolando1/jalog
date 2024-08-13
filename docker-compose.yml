@@ -1,3 +1,4 @@
+version: '3'
 services:
   frontend:
     build: ./frontend
@@ -12,3 +13,11 @@ services:
     environment:
       - PROLOG_HOST=prolog
       - PROLOG_PORT=4000
+
+  ngrok:
+    image: wernight/ngrok
+    volumes:
+      - ./ngrok.yml:/ngrok.yml  # Mount the ngrok.yml configuration file
+    command: ngrok start --config /ngrok.yml --all  # Use the ngrok.yml config
+    ports:
+      - "4040:4040"  # Expose the ngrok dashboard
