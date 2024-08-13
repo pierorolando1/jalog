@@ -1,6 +1,10 @@
 package com.example;
 
-import org.jpl7.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import org.jpl7.Query;
+import org.jpl7.Term;
 
 public class Account {
     private String id;
@@ -20,4 +24,24 @@ public class Account {
         }
         return false;
     }
+
+    public String getBalance() {
+        String prologQuery = String.format("calcular_balance(%s, Balance)", id);
+        Query query = new Query(prologQuery);
+
+        if (query.hasSolution()) {
+            Map<String, Term> solution = query.oneSolution();
+            return solution.get("Balance").toString();
+        }
+        return "No se pudo calcular el balance para la cuenta especificada";
+    }
+
+    public List<Map<String, Object>> getTransactions() {
+
+        //TODO"
+
+        return Collections.emptyList();
+    }
+
+
 }

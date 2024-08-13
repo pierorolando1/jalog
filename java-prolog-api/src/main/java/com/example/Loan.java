@@ -22,4 +22,14 @@ public class Loan {
         }
         return false;
     }
+
+    public String getStatus() {
+        String prologQuery = String.format("estado_prestamo(%s, Estado)", id);
+        Query query = new Query(prologQuery);
+
+        if (query.hasSolution()) {
+            return query.oneSolution().get("Estado").toString();
+        }
+        return "No se pudo obtener el estado del préstamo especificado";
+    }
 }
