@@ -1,11 +1,11 @@
 version: '3'
 services:
-  #frontend:
-  #  build: ./frontend
-  #  ports:
-  #    - "5173:5173"  # Format is "HOST:CONTAINER"
-  #  environment:
-  #    - NODE_ENV=development
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"  # Format is "HOST:CONTAINER"
+    environment:
+      - NODE_ENV=development
   java-app:
     build: ./java-prolog-api
     ports:
