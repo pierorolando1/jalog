@@ -28,7 +28,6 @@ public class Transaction {
     }
 
     public double getAmmount() {
-        //TODO:
         return amount;
     }
 }

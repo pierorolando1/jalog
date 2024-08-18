@@ -38,9 +38,21 @@ public class Account {
 
     public List<Map<String, Object>> getTransactions() {
 
-        //TODO"
-
+        String prologQuery = String.format(
+            "findall(trans(ID, Origen, Destino, Monto), " +
+            "(transaccion(ID, Origen, Destino, Monto), " +
+            "(Origen = %1$s ; Destino = %1$s)), Transacciones)",
+            this.id
+        );
+        Query query = new Query(prologQuery);
+        if (query.hasSolution()) {
+            Term[] transactions = query.oneSolution().get("Transacciones").toTermArray();
+            return Arrays.stream(transactions)
+                         .map(t -> this.transactionToMap(t, idCuenta))
+                         .collect(Collectors.toList());
+        }
         return Collections.emptyList();
+
     }
 
 

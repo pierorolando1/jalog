@@ -37,13 +37,31 @@ public class User {
     }
 
     List<Account> getAccounts() {
-        //TODO
+
+        String prologQuery = String.format(
+            "findall(Cuenta, " +
+            "(relacion_cliente_cuenta(%s, Cuenta), cuenta(Cuenta, _)), Cuentas)",
+            dni
+        );
+        Query query = new Query(prologQuery);
+        if (query.hasSolution()) {
+            return query.oneSolution().get("Cuentas").toTermArray();
+        }
         return Collections.emptyList();
+
     }
 
     List<Loan> getLoans() {
-        //TODO
-        return Collections.emptyList();
+            String prologQuery = String.format(
+                "findall(Prestamo, " +
+                "(relacion_cliente_prestamo(%s, Prestamo), prestamo(Prestamo, _, _)), Prestamos)",
+                dni
+            );
+            Query query = new Query(prologQuery);
+            if (query.hasSolution()) {
+                return query.oneSolution().get("Prestamos").toTermArray();
+            }
+            return Collections.emptyList();
     }
 
 
